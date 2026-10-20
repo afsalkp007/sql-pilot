@@ -42,5 +42,6 @@ htmlcov/
 
 # Outputs & temporary databases
 outputs/
+*.db
 *.db-journal
 test_*.db
