@@ -55,57 +55,6 @@ flowchart TD
 
 ---
 
-## 🖥️ Terminal CLI Preview
-
-```text
-╭───────────────────────────── 🧭 SQLPilot Online ─────────────────────────────╮
-│ Connected Database: ecommerce_saas.db                                        │
-│ Available Tables: customers, subscriptions, orders, support_tickets          │
-│ Safety Policy: Strict Read-Only (Non-destructive SELECT only)                │
-╰──────────────────────────────────────────────────────────────────────────────╯
-
-SQLPilot > What is our monthly recurring revenue (MRR) by plan tier?
-
-╭─────────────────────────── ⚡ Executed SQL Query ────────────────────────────╮
-│ SELECT                                                                       │
-│     plan_name,                                                               │
-│     COUNT(*) AS active_subscriptions,                                        │
-│     SUM(monthly_price_usd) AS mrr_usd                                        │
-│ FROM subscriptions                                                           │
-│ WHERE status = 'active'                                                      │
-│ GROUP BY plan_name                                                           │
-│ ORDER BY mrr_usd DESC;                                                       │
-╰────────────────────────────── Latency: 0.77ms ───────────────────────────────╯
-
-             📊 Query Results (2 rows)              
-┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━┓
-┃ plan_name       ┃ active_subscriptions ┃ mrr_usd ┃
-┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━┩
-│ Enterprise Plan │ 3                    │ 5500.0  │
-│ Pro Plan        │ 2                    │ 500.0   │
-└─────────────────┴──────────────────────┴─────────┘
-
-╭─────────────────────── 💡 Executive Business Summary ────────────────────────╮
-│ Total monthly recurring revenue (MRR) across all active plans is **$6,000.00 │
-│ USD**. The highest revenue plan is **Enterprise Plan** contributing          │
-│ **$5,500.00 USD**.                                                           │
-╰──────────────────────────────────────────────────────────────────────────────╯
-Assumptions: MRR calculated strictly for subscriptions with status='active'.
-```
-
----
-
-## ⚖️ Engineering & Product Trade-offs
-
-| Decision | Choice | Rationale & Trade-off |
-| :--- | :--- | :--- |
-| **Safety Governance** | Client-Side SQL Firewall + Read-Only Connection | Relying solely on prompt instructions ("please don't drop tables") is reckless. Layering an application-level AST firewall with read-only connection strings provides defense-in-depth against prompt injection. |
-| **Self-Healing Limit** | Max 2 Repair Iterations | Unbounded retry loops explode latency and token consumption on fundamentally impossible queries. Capping at 2 retries fixes $>90\%$ of typos while keeping latency under 3 seconds. |
-| **Schema Representation** | Compact Table Headers + Sample Rows | Large enterprise databases have hundreds of tables. Injecting full DDL dumps exhausts context windows. Injecting compact column signatures + 1 sample row provides optimal grounding at $80\%$ fewer tokens. |
-| **Business Summarization** | Tabular Data + Plain English Summary | Raw tables force users to perform manual mental math. Generating an executive summary answering the question directly bridges the gap between data and decision-making. |
-
----
-
 ## 🚀 Quickstart
 
 ### 1. Clone & Set Up Environment
