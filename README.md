@@ -95,7 +95,7 @@ Assumptions: MRR calculated strictly for subscriptions with status='active'.
 
 ---
 
-## ⚖️ Engineering & Product Trade-offs (AI PM Rationale)
+## ⚖️ Engineering & Product Trade-offs
 
 | Decision | Choice | Rationale & Trade-off |
 | :--- | :--- | :--- |
